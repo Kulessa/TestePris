@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[UF]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY,
+	[Sigla] char(2) NOT NULL DEFAULT '',
+	[Nome] varchar(50) NOT NULL DEFAULT ''
+)
