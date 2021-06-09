@@ -29,7 +29,25 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
         {
             try
             {
-                var dados = repository.Select().OrderBy(p=>p.Valor).ToList();
+                var dados = repository.Select().Select(p => new
+                {
+                    p.Id,
+                    p.Alugado,
+                    p.Area,
+                    p.BairroId,
+                    p.Cep,
+                    p.CidadeId,
+                    p.Complemento,
+                    p.Condominio,
+                    p.Dormitorios,
+                    p.Endereco,
+                    p.Numero,
+                    p.Suites,
+                    p.TipoId,
+                    p.Ufid,
+                    p.VagasCarro,
+                    p.Valor
+                }).OrderBy(p => p.Valor).ToList();
                 if (dados == null && dados.Count == 0)
                 {
                     return NotFound();
@@ -51,25 +69,25 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 {
                     return NotFound();
                 }
-                var item = new { 
-                    dados.Id, 
-                    dados.Alugado, 
-                    dados.Area, 
-                    dados.BairroId, 
-                    dados.Cep, 
-                    dados.CidadeId, 
-                    dados.Complemento, 
-                    dados.Condominio, 
-                    dados.Dormitorios, 
-                    dados.Endereco, 
-                    dados.Numero, 
-                    dados.Suites, 
-                    dados.Tipo, 
-                    dados.TipoId, 
-                    dados.Uf, 
-                    dados.Ufid, 
-                    dados.VagasCarro, 
-                    dados.Valor };
+                var item = new
+                {
+                    dados.Id,
+                    dados.Alugado,
+                    dados.Area,
+                    dados.BairroId,
+                    dados.Cep,
+                    dados.CidadeId,
+                    dados.Complemento,
+                    dados.Condominio,
+                    dados.Dormitorios,
+                    dados.Endereco,
+                    dados.Numero,
+                    dados.Suites,
+                    dados.TipoId,
+                    dados.Ufid,
+                    dados.VagasCarro,
+                    dados.Valor
+                };
                 return Ok(item);
             }
             catch (Exception ex)

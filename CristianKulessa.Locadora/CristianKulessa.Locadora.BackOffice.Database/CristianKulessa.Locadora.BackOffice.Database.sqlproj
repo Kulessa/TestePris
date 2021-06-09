@@ -65,4 +65,10 @@
     <Build Include="Tables\Cidade.sql" />
     <Build Include="Tables\Bairro.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CristianKulessa.Locadora.BackOffice.Database.publish.xml" />
+  </ItemGroup>
 </Project>

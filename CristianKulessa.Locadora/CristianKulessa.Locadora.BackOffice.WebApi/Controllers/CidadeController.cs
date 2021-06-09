@@ -29,7 +29,12 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
         {
             try
             {
-                var dados = repository.Select().OrderBy(p => p.Nome).ToList();
+                var dados = repository.Select().Select(p => new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.Ufid
+                }).OrderBy(p => p.Nome).ToList();
                 if (dados == null && dados.Count == 0)
                 {
                     return NotFound();
@@ -54,9 +59,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 var item = new
                 {
                     dados.Id,
-                    dados.Bairro,
                     dados.Nome,
-                    dados.Uf,
                     dados.Ufid
                 };
                 return Ok(item);
