@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[Imovel]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [TipoId] INT NOT NULL, 
+    [UFId] INT NOT NULL, 
+    [CidadeId] INT NOT NULL, 
+    [BairroId] INT NOT NULL, 
+    [Alugado] BIT NOT NULL DEFAULT 0,
+    [Dormitorios] INT NOT NULL DEFAULT 1, 
+    [Suites] INT NOT NULL DEFAULT 0, 
+    [VagasCarro] INT NOT NULL DEFAULT 0, 
+    [CEP] CHAR(8) NOT NULL DEFAULT '00000000', 
+    [Area] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [Condominio] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [Valor] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [Endereco] VARCHAR(150) NOT NULL DEFAULT '', 
+    [Numero] VARCHAR(50) NOT NULL DEFAULT '', 
+    [Complemento] VARCHAR(50) NOT NULL DEFAULT '', 
+    CONSTRAINT [FK_Imovel_Tipo] FOREIGN KEY (TipoId) REFERENCES [Tipo]([Id]), 
+    CONSTRAINT [FK_Imovel_UF] FOREIGN KEY (UFId) REFERENCES [UF]([Id]), 
+)
