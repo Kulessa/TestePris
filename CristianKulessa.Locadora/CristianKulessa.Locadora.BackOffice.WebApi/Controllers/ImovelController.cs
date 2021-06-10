@@ -48,7 +48,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     p.VagasCarro,
                     p.Valor
                 }).OrderBy(p => p.Valor).ToList();
-                if (dados == null && dados.Count == 0)
+                if (dados == null || dados.Count == 0)
                 {
                     return NotFound();
                 }
@@ -101,7 +101,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select().Where(p => p.TipoId == id).OrderBy(p => p.Valor).ToList();
-                if (dados == null && dados.Count == 0)
+                if (dados == null || dados.Count == 0)
                 {
                     return NotFound();
                 }

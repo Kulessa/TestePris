@@ -35,7 +35,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     p.Nome,
                     p.Sigla
                 }).OrderBy(p => p.Nome).ToList();
-                if (dados == null && dados.Count == 0)
+                if (dados == null || dados.Count == 0)
                 {
                     return NotFound();
                 }

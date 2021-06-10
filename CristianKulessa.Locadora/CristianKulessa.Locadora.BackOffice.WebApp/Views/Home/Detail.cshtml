@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Detalhe";
+}
+@section Styles{
+    <style>
+        .custom-switch.custom-switch-off-danger .custom-control-input:checked ~ .custom-control-label::before {
+            background: #dc3545;
+            border-color: #921925;
+        }
+
+        .custom-switch.custom-switch-off-danger .custom-control-input:checked:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px rgba(220, 53, 69, 0.25);
+        }
+
+        .custom-switch.custom-switch-off-danger .custom-control-input:checked ~ .custom-control-label::after {
+            background: #7c151f;
+        }
+        .custom-switch.custom-switch-on-success .custom-control-input ~ .custom-control-label::before {
+            background: #28a745;
+            border-color: #145523;
+        }
+        .custom-switch.custom-switch-on-success .custom-control-input:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px rgba(40, 167, 69, 0.25);
+        }
+        .custom-switch.custom-switch-on-success .custom-control-input ~ .custom-control-label::after {
+            background: #86e29b;
+        }
+    </style>
+}
+@section Scripts{
+    <script>
+    </script>
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Fornecedor</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="selectTipo">Tipo</label>
+                                    <select class="form-control" id="selectTipo" name="selectTipo">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textCEP">CEP</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" name="textCEP" id="textCEP" placeholder="CEP" value="" />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary nacional" type="button" id="buttonCEP"><i class="fas fa-ellipsis-h"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="textEndereco">Endereço</label>
+                                    <input type="text" class="form-control" name="textEndereco" id="textEndereco" placeholder="Endereço" value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textNumero">Nº</label>
+                                    <input type="text" class="form-control" name="textNumero" id="textNumero" placeholder="Número" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textComplemento">Complemento</label>
+                                    <input type="text" class="form-control" name="textComplemento" id="textComplemento" placeholder="Complemento" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="selectUF">UF</label>
+                                    <select class="form-control" id="selectUF" name="selectUF">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="selectCidade">Cidade</label>
+                                    <select class="form-control" id="selectCidade" name="selectCidade">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="selectBairro">Bairro</label>
+                                    <select class="form-control" id="selectBairro" name="selectBairro">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="checkboxAlugado" checked="checked">
+                                        <label class="custom-control-label" for="checkboxAlugado">Alugado</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="textFantasia">Dormitorios</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="textFantasia">Suites</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="textFantasia">Vagas para carro</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textFantasia">Área (m²)</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Área (m²)" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textFantasia">Condomínio</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Condomínio" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textFantasia">Valor</label>
+                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Valor" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary" id="buttonSalvar"><i class="far fa-save"></i>&nbsp;Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
