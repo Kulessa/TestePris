@@ -24,28 +24,6 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             this.logger = logger;
             this.repository = repository;
         }
-        [HttpGet]
-        public IActionResult Get()
-        {
-            try
-            {
-                var dados = repository.Select().Select(p => new
-                {
-                    p.Id,
-                    p.CidadeId,
-                    p.Nome
-                }).OrderBy(p => p.Nome).ToList();
-                if (dados == null || dados.Count == 0)
-                {
-                    return NotFound();
-                }
-                return Ok(dados);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
-        }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -63,6 +41,28 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     dados.Nome
                 };
                 return Ok(item);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
+        [HttpGet("cidade/{cidadeId}")]
+        public IActionResult GetByCidade(int cidadeId)
+        {
+            try
+            {
+                var dados = repository.Select().Where(p=>p.CidadeId == cidadeId).Select(p => new
+                {
+                    p.Id,
+                    p.CidadeId,
+                    p.Nome
+                }).OrderBy(p => p.Nome).ToList();
+                if (dados == null || dados.Count == 0)
+                {
+                    return NotFound();
+                }
+                return Ok(dados);
             }
             catch (Exception ex)
             {

@@ -34,11 +34,23 @@ namespace CristianKulessa.Locadora.BackOffice.WebApp.Controllers
         }
         public IActionResult Detail()
         {
+            var urlApiBairro = config.GetSection("ApiSettings")["UrlApiBairro"];
+            ViewBag.UrlApiBairro = urlApiBairro;
+
+            var urlApiCEP = config.GetSection("ApiSettings")["UrlApiCEP"];
+            ViewBag.UrlApiCEP = urlApiCEP;
+
+            var urlApiCidade = config.GetSection("ApiSettings")["UrlApiCidade"];
+            ViewBag.UrlApiCidade = urlApiCidade;
+
             var urlApiTipo = config.GetSection("ApiSettings")["UrlApiTipo"];
             ViewBag.UrlApiTipo = urlApiTipo;
 
             var urlApiImovelTipo = config.GetSection("ApiSettings")["UrlApiImovelTipo"];
             ViewBag.UrlApiImovelTipo = urlApiImovelTipo;
+
+            var urlApiUF = config.GetSection("ApiSettings")["UrlApiUF"];
+            ViewBag.UrlApiUF = urlApiUF;
 
             return View();
         }

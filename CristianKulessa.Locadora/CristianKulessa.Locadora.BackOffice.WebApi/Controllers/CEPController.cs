@@ -40,7 +40,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             this.bairroRepository = bairroRepository;
         }
 
-        [HttpGet]
+        [HttpGet("{cep}")]
         public object Get(string cep)
         {
             var urlWS = config.GetSection("WebServiceSettings")["WSCorreios"];

@@ -69,6 +69,28 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
+        [HttpGet("uf/{ufId}")]
+        public IActionResult GetByUf(int ufId)
+        {
+            try
+            {
+                var dados = repository.Select().Where(p=>p.Ufid == ufId).Select(p => new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.Ufid
+                }).OrderBy(p => p.Nome).ToList();
+                if (dados == null || dados.Count == 0)
+                {
+                    return NotFound();
+                }
+                return Ok(dados);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
         [HttpPost]
         public IActionResult Post(Cidade item)
         {
