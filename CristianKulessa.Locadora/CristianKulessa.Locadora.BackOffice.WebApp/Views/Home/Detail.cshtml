@@ -15,13 +15,16 @@
         .custom-switch.custom-switch-off-danger .custom-control-input:checked ~ .custom-control-label::after {
             background: #7c151f;
         }
+
         .custom-switch.custom-switch-on-success .custom-control-input ~ .custom-control-label::before {
             background: #28a745;
             border-color: #145523;
         }
+
         .custom-switch.custom-switch-on-success .custom-control-input:focus ~ .custom-control-label::before {
             box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px rgba(40, 167, 69, 0.25);
         }
+
         .custom-switch.custom-switch-on-success .custom-control-input ~ .custom-control-label::after {
             background: #86e29b;
         }
@@ -29,6 +32,161 @@
 }
 @section Scripts{
     <script>
+        $(document).ready(function () {
+            var table;
+            function buttonCEPOnClick() {
+                $('#buttonCEP').click(function (e) {
+                    e.preventDefault();
+                    var cep = $('#textCEP').val();
+                    if (cep.trim().length != 8) {
+                        esconderEndereco();
+                        return;
+                    }
+                    buscarEndereco(cep)
+                });
+            }
+            function selectUFOnChange() {
+                $('#selectUF').change(function (e) {
+                    e.preventDefault();
+                    montarSelectCidade(this.value);
+                });}
+            function selectCidadeOnChange() {
+                $('#selectCidade').change(function (e) {
+                    e.preventDefault();
+                    montarSelectBairro(this.value);
+                });
+            }
+            function buscarEndereco(cep) {
+                var urlApiCEP = '@ViewBag.UrlApiCEP' + cep;
+                $.ajax({
+                    type: "GET",
+                    url: urlApiCEP,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response != null) {
+                            mostrarEndereco(response);
+                        }
+                    },
+                    error: function () {
+                        esconderEndereco();
+                    }
+                });
+            }
+            function esconderEndereco() {
+                $('#divEndereco').addClass('invisible');
+                $('#divUF').addClass('invisible');
+                $('#divCidade').addClass('invisible');
+                $('#divBairro').addClass('invisible');
+                $('#textEndereco').val('');
+                $('#selectUF').val(0);
+                $('#selectCidade').val(0);
+                $('#selectBairro').val(0);
+
+            }
+            function montarSelectBairro(cidadeId) {
+                var urlApiBairro = '@ViewBag.UrlApiBairro' + cidadeId;
+                $.ajax({
+                    type: "GET",
+                    url: urlApiBairro,
+                    timeout: 0,
+                    async: false,
+                    success: function (response) {
+                        if (response != null) {
+                            var selectBairro = $('#selectBairro');
+                            selectBairro.find('option').remove();
+                            $('<option>').val('0').text('[Selecionar...]').appendTo(selectBairro);
+                            $.each(response, function (indexInArray, valueOfElement) {
+                                $('<option>').val(valueOfElement.id).text(valueOfElement.nome).appendTo(selectBairro);
+                            });
+                        }
+                    }
+                });
+            }
+            function montarSelectCidade(ufId) {
+                var urlApiCidade = '@ViewBag.UrlApiCidade' + ufId;
+                $.ajax({
+                    type: "GET",
+                    url: urlApiCidade,
+                    timeout: 0,
+                    async: false,
+                    success: function (response) {
+                        if (response != null) {
+                            var selectCidade = $('#selectCidade');
+                            selectCidade.find('option').remove();
+                            $('<option>').val('0').text('[Selecionar...]').appendTo(selectCidade);
+                            $.each(response, function (indexInArray, valueOfElement) {
+                                $('<option>').val(valueOfElement.id).text(valueOfElement.nome).appendTo(selectCidade);
+                            });
+                        }
+                    }
+                });
+            }
+            function montarSelectTipo() {
+                var urlApiTipo = '@ViewBag.UrlApiTipo';
+                $.ajax({
+                    type: "GET",
+                    url: urlApiTipo,
+                    timeout: 0,
+                    async: false,
+                    success: function (response) {
+                        if (response != null) {
+                            var selectTipo = $('#selectTipo');
+                            selectTipo.find('option').remove();
+                            $('<option>').val('0').text('[Selecionar...]').appendTo(selectTipo);
+                            $.each(response, function (indexInArray, valueOfElement) {
+                                $('<option>').val(valueOfElement.id).text(valueOfElement.nome).appendTo(selectTipo);
+                            });
+                        }
+                    }
+                });
+            }
+            function montarSelectUF() {
+                var urlApiUF = '@ViewBag.UrlApiUF';
+                $.ajax({
+                    type: "GET",
+                    url: urlApiUF,
+                    timeout: 0,
+                    async: false,
+                    success: function (response) {
+                        if (response != null) {
+                            var selectUF = $('#selectUF');
+                            selectUF.find('option').remove();
+                            $('<option>').val('0').text('[Selecionar...]').appendTo(selectUF);
+                            $.each(response, function (indexInArray, valueOfElement) {
+                                $('<option>').val(valueOfElement.id).text(valueOfElement.sigla).appendTo(selectUF);
+                            });
+                        }
+                    }
+                });
+            }
+            function mostrarEndereco(dados) {
+                $('#divEndereco').removeClass('invisible');
+                $('#divUF').removeClass('invisible');
+                $('#divCidade').removeClass('invisible');
+                $('#divBairro').removeClass('invisible');
+                $('#textEndereco').val(dados.endereco);
+                $('#selectUF').val(dados.ufId);
+                montarSelectCidade(dados.ufId);
+                $('#selectCidade').val(dados.cidadeId);
+                montarSelectBairro(dados.cidadeId);
+                $('#selectBairro').val(dados.bairroId);
+            }
+            function soNumero() {
+                $('.sonumero').on('keypress', function (e) {
+                    tecla = e.which;
+                    return ((tecla > 47 && tecla < 58) || (tecla == 8 || tecla == 0));
+                });
+            }
+            function inicializar() {
+                buttonCEPOnClick();
+                selectCidadeOnChange();
+                selectUFOnChange();
+                montarSelectTipo();
+                montarSelectUF();
+                soNumero();
+            }
+            inicializar();
+        });
     </script>
 }
 <section class="content">
@@ -52,7 +210,7 @@
                                 <div class="form-group">
                                     <label for="textCEP">CEP</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" name="textCEP" id="textCEP" placeholder="CEP" value="" />
+                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" />
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary nacional" type="button" id="buttonCEP"><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
@@ -60,7 +218,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-8">
-                                <div class="form-group">
+                                <div  id="divEndereco"class="form-group invisible">
                                     <label for="textEndereco">Endereço</label>
                                     <input type="text" class="form-control" name="textEndereco" id="textEndereco" placeholder="Endereço" value="" />
                                 </div>
@@ -80,21 +238,21 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
-                                <div class="form-group">
+                                <div id="divUF" class="form-group invisible">
                                     <label for="selectUF">UF</label>
                                     <select class="form-control" id="selectUF" name="selectUF">
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group">
+                                <div id="divCidade" class="form-group invisible">
                                     <label for="selectCidade">Cidade</label>
                                     <select class="form-control" id="selectCidade" name="selectCidade">
                                     </select>
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="form-group">
+                                <div id="divBairro" class="form-group invisible">
                                     <label for="selectBairro">Bairro</label>
                                     <select class="form-control" id="selectBairro" name="selectBairro">
                                     </select>
@@ -124,7 +282,7 @@
                                     <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
                                 </div>
                             </div>
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textFantasia">Vagas para carro</label>
                                     <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
