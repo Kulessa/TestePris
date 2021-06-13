@@ -34,10 +34,6 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     p.Id,
                     p.Nome
                 }).OrderBy(p => p.Nome).ToList();
-                if (dados == null || dados.Count == 0)
-                {
-                    return NotFound();
-                }
                 return Ok(dados);
             }
             catch (Exception ex)
@@ -51,10 +47,6 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select(id);
-                if (dados == null)
-                {
-                    return NotFound();
-                }
                 var item = new
                 {
                     dados.Id,

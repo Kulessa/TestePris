@@ -21,9 +21,6 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterRepositories();
-            services.AddDbContext<AppDbContext>(opitions => 
-                opitions.UseSqlServer(Configuration.GetConnectionString("myDb1")));
-            services.AddControllers();
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "cors1",
@@ -34,6 +31,9 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi
                         builder.AllowAnyMethod();
                     });
             });
+            services.AddDbContext<AppDbContext>(opitions => 
+                opitions.UseSqlServer(Configuration.GetConnectionString("myDb1")));
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CristianKulessa.Locadora.BackOffice.WebApi", Version = "v1" });
