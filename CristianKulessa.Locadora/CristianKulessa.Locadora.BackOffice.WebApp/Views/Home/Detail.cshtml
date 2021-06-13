@@ -31,6 +31,7 @@
     </style>
 }
 @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js" integrity="sha512-6Jym48dWwVjfmvB0Hu3/4jn4TODd6uvkxdi9GNbBHwZ4nGcRxJUCaTkL3pVY6XUQABqFo3T58EMXFQztbjvAFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
             var table;
@@ -65,10 +66,12 @@
                     success: function (response) {
                         if (response != null) {
                             mostrarEndereco(response);
+                            fazerEnderecoReadOnly(true);
                         }
                     },
                     error: function () {
                         esconderEndereco();
+                        fazerEnderecoReadOnly(false);
                     }
                 });
             }
@@ -82,6 +85,20 @@
                 $('#selectCidade').val(0);
                 $('#selectBairro').val(0);
 
+            }
+            function fazerEnderecoReadOnly(chave) {
+                if (chave) {
+                    $('#textEndereco').attr('readonly', 'readonly');
+                    $('#selectUF').attr('disabled', 'disabled');
+                    $('#selectCidade').attr('disabled', 'disabled');
+                    $('#selectBairro').attr('disabled', 'disabled');
+                }
+                else {
+                    $('#textEndereco').removeAttr('readonly');
+                    $('#selectUF').removeAttr('disabled');
+                    $('#selectCidade').removeAttr('disabled');
+                    $('#selectBairro').removeAttr('disabled');
+                }
             }
             function montarSelectBairro(cidadeId) {
                 var urlApiBairro = '@ViewBag.UrlApiBairro' + cidadeId;
@@ -178,6 +195,7 @@
                 });
             }
             function inicializar() {
+                $('#textCEP').inputmask('99999999');
                 buttonCEPOnClick();
                 selectCidadeOnChange();
                 selectUFOnChange();
@@ -210,7 +228,7 @@
                                 <div class="form-group">
                                     <label for="textCEP">CEP</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" />
+                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" autocomplete="off"/>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary nacional" type="button" id="buttonCEP"><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
@@ -270,22 +288,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="textFantasia">Dormitorios</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                    <label for="textDormitorios">Dormitórios</label>
+                                    <input type="text" class="form-control sonumero" name="textDormitorios" id="textDormitorios" placeholder="Dormitórios" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
-                                    <label for="textFantasia">Suites</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                    <label for="textSuites">Suítes</label>
+                                    <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="textFantasia">Vagas para carro</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Dormitorios" value="" />
+                                    <label for="textVagas">Vagas para carro</label>
+                                    <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
