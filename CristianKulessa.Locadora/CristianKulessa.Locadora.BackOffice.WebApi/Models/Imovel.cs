@@ -1,4 +1,7 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+
+#nullable disable
 
 namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
 {
@@ -20,6 +23,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
         public string Endereco { get; set; }
         public string Numero { get; set; }
         public string Complemento { get; set; }
+        public decimal? ValorTotal { get; set; }
 
         public virtual Tipo Tipo { get; set; }
         public virtual Uf Uf { get; set; }

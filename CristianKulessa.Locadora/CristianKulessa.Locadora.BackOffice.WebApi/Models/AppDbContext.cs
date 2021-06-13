@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -23,7 +25,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Bairro>(entity =>
             {
@@ -94,6 +96,10 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
                 entity.Property(e => e.Ufid).HasColumnName("UFId");
 
                 entity.Property(e => e.Valor).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ValorTotal)
+                    .HasColumnType("decimal(19, 2)")
+                    .HasComputedColumnSql("([Valor]+[Condominio])", false);
 
                 entity.HasOne(d => d.Tipo)
                     .WithMany(p => p.Imovel)
