@@ -15,7 +15,8 @@
     [Valor] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
     [Endereco] VARCHAR(150) NOT NULL DEFAULT '', 
     [Numero] VARCHAR(50) NOT NULL DEFAULT '', 
-    [Complemento] VARCHAR(50) NOT NULL DEFAULT '', 
+    [Complemento] VARCHAR(50) NOT NULL DEFAULT '',
+    [ValorTotal] AS [Valor] + [Condominio],
     CONSTRAINT [FK_Imovel_Tipo] FOREIGN KEY (TipoId) REFERENCES [Tipo]([Id]), 
     CONSTRAINT [FK_Imovel_UF] FOREIGN KEY (UFId) REFERENCES [UF]([Id]), 
 )

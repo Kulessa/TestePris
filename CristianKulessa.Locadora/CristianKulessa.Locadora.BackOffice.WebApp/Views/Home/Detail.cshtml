@@ -196,6 +196,11 @@
             }
             function inicializar() {
                 $('#textCEP').inputmask('99999999');
+                $(".decimal").inputmask("decimal", {
+                    'digits': 2,
+                    'radixPoint': ",",
+                    'digitsOptional': false
+                });
                 buttonCEPOnClick();
                 selectCidadeOnChange();
                 selectUFOnChange();
@@ -300,28 +305,34 @@
                                     <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="" />
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <div class="form-group">
-                                    <label for="textVagas">Vagas para carro</label>
+                                    <label for="textVagas">Vagas</label>
                                     <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="textFantasia">Área (m²)</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Área (m²)" value="" />
+                                    <label for="textArea">Área (m²)</label>
+                                    <input type="text" class="form-control decimal" name="textArea" id="textArea" placeholder="Área (m²)" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="textFantasia">Condomínio</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Condomínio" value="" />
+                                    <label for="textCondominio">Condomínio</label>
+                                    <input type="text" class="form-control decimal" name="textCondominio" id="textCondominio" placeholder="Condomínio" value="" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="textFantasia">Valor</label>
-                                    <input type="text" class="form-control" name="textFantasia" id="textFantasia" placeholder="Valor" value="" />
+                                    <label for="textValor">Valor</label>
+                                    <input type="text" class="form-control decimal" name="textValor" id="textValor" placeholder="Valor" value="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="textValorTotal">Valor Total</label>
+                                    <input type="text" class="form-control decimal" name="textValorTotal" id="textValorTotal" placeholder="Valor Total" value="" />
                                 </div>
                             </div>
                         </div>
