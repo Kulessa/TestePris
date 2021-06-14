@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CristianKulessa.Locadora.BackOffice.WebApp.Controllers
 {
@@ -32,8 +28,10 @@ namespace CristianKulessa.Locadora.BackOffice.WebApp.Controllers
 
             return View();
         }
-        public IActionResult Detail()
+        public IActionResult Detail(int id = 0)
         {
+            ViewBag.Id = id;
+
             var urlApiBairro = config.GetSection("ApiSettings")["UrlApiBairro"];
             ViewBag.UrlApiBairro = urlApiBairro;
 
@@ -48,6 +46,9 @@ namespace CristianKulessa.Locadora.BackOffice.WebApp.Controllers
 
             var urlApiImovelTipo = config.GetSection("ApiSettings")["UrlApiImovelTipo"];
             ViewBag.UrlApiImovelTipo = urlApiImovelTipo;
+
+            var urlApiImovel = config.GetSection("ApiSettings")["UrlApiImovel"];
+            ViewBag.UrlApiImovel = urlApiImovel;
 
             var urlApiUF = config.GetSection("ApiSettings")["UrlApiUF"];
             ViewBag.UrlApiUF = urlApiUF;

@@ -1,5 +1,3 @@
-using System;
-
 namespace CristianKulessa.Locadora.BackOffice.WebApp.Models
 {
     public class ErrorViewModel

@@ -98,14 +98,21 @@
                         "type": "GET",
                         "contentType": "application/json; charset=utf-8",
                         "url": urlApi,
-                        "dataSrc": ""                    },
+                        "dataSrc": ""
+                    },
                     "columns": [
                         { "data": null },
                         { "data": "id" },
                         { "data": "tipo" },
-                        { "data": "alugado" },
+                        {
+                            "data": "alugado",
+                            "render": function (data, type, row) {
+                                return (data == true) ? 'Sim' : 'Não';
+                            }
+                        },
                         { "data": "condominio" },
                         { "data": "valor" },
+                        { "data": "valorTotal" },
                         { "data": "dormitorios" },
                         { "data": "suites" },
                         { "data": "vagasCarro" },
@@ -129,7 +136,7 @@
                 });
                 $('#tableDados tbody').on('click', 'button', function () {
                     var data = table.row($(this).parents('tr')).data();
-                    window.open("./Detail/" + data.id, "_parent");
+                    window.open("./Home/Detail/" + data.id, "_parent");
                 });
 
                 $('div.dt-buttons.btn-group.flex-wrap').removeClass('btn-group');
@@ -184,6 +191,7 @@
                             <td>Alugado</td>
                             <td>Condominio</td>
                             <td>Valor</td>
+                            <td>Valor Total</td>
                             <td>Dormitórios</td>
                             <td>Suites</td>
                             <td>Vagas para Carro</td>

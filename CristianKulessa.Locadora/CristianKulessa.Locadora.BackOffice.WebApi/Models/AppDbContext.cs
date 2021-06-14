@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
@@ -100,6 +98,18 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
                 entity.Property(e => e.ValorTotal)
                     .HasColumnType("decimal(19, 2)")
                     .HasComputedColumnSql("([Valor]+[Condominio])", false);
+
+                entity.HasOne(d => d.Bairro)
+                    .WithMany(p => p.Imovel)
+                    .HasForeignKey(d => d.BairroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Imovel_Bairro");
+
+                entity.HasOne(d => d.Cidade)
+                    .WithMany(p => p.Imovel)
+                    .HasForeignKey(d => d.CidadeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Imovel_Cidade");
 
                 entity.HasOne(d => d.Tipo)
                     .WithMany(p => p.Imovel)

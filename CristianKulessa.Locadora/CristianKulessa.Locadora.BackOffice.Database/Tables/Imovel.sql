@@ -2,7 +2,7 @@
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
     [TipoId] INT NOT NULL, 
-    [UFId] INT NOT NULL, 
+    [UfId] INT NOT NULL, 
     [CidadeId] INT NOT NULL, 
     [BairroId] INT NOT NULL, 
     [Alugado] BIT NOT NULL DEFAULT 0,
@@ -19,4 +19,6 @@
     [ValorTotal] AS [Valor] + [Condominio],
     CONSTRAINT [FK_Imovel_Tipo] FOREIGN KEY (TipoId) REFERENCES [Tipo]([Id]), 
     CONSTRAINT [FK_Imovel_UF] FOREIGN KEY (UFId) REFERENCES [UF]([Id]), 
+    CONSTRAINT [FK_Imovel_Cidade] FOREIGN KEY (CidadeId) REFERENCES [Cidade]([Id]), 
+    CONSTRAINT [FK_Imovel_Bairro] FOREIGN KEY (BairroId) REFERENCES [Bairro]([Id]), 
 )

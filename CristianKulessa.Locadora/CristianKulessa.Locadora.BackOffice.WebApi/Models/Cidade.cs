@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 #nullable disable
 
@@ -10,6 +9,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
         public Cidade()
         {
             Bairro = new HashSet<Bairro>();
+            Imovel = new HashSet<Imovel>();
         }
 
         public int Id { get; set; }
@@ -18,5 +18,6 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
 
         public virtual Uf Uf { get; set; }
         public virtual ICollection<Bairro> Bairro { get; set; }
+        public virtual ICollection<Imovel> Imovel { get; set; }
     }
 }

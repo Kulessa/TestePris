@@ -46,6 +46,13 @@
                     buscarEndereco(cep)
                 });
             }
+            function buttonSalvarOnClick() {
+                $('#buttonSalvar').click(function (e) {
+                    e.preventDefault();
+                    var dados = lerDados();
+                    salvar(dados);
+                });
+            }
             function selectUFOnChange() {
                 $('#selectUF').change(function (e) {
                     e.preventDefault();
@@ -99,6 +106,27 @@
                     $('#selectCidade').removeAttr('disabled');
                     $('#selectBairro').removeAttr('disabled');
                 }
+            }
+            function lerDados() {
+                var dados = {
+                    id: @ViewBag.Id,
+                    tipoId: parseInt($('#selectTipo').val()),
+                    ufId: parseInt($('#selectUF').val()),
+                    cidadeId: parseInt($('#selectCidade').val()),
+                    bairroId: parseInt($('#selectBairro').val()),
+                    alugado: $('#checkboxAlugado').is(':checked'),
+                    dormitorios: parseInt($('#textDormitorios').val()),
+                    suites: parseInt($('#textSuites').val()),
+                    vagasCarro: parseInt($('#textVagas').val()),
+                    cep: $('#textCEP').val(),
+                    area: parseFloat($('#textArea').val()),
+                    condominio: parseFloat($('#textCondominio').val()),
+                    valor: parseFloat($('#textValor').val()),
+                    endereco: $('#textEndereco').val(),
+                    numero: $('#textNumero').val(),
+                    complemento: $('#textComplemento').val()
+                };
+                return dados;
             }
             function montarSelectBairro(cidadeId) {
                 var urlApiBairro = '@ViewBag.UrlApiBairro' + cidadeId;
@@ -188,6 +216,25 @@
                 montarSelectBairro(dados.cidadeId);
                 $('#selectBairro').val(dados.bairroId);
             }
+            function salvar(dados) {
+                var tipo = (dados.id == null || dados.id == 0) ? 'POST' : 'PUT';
+                var urlApiImovel = '@ViewBag.UrlApiImovel';
+                $.ajax({
+                    url: urlApiImovel,
+                    method: tipo,
+                    timeout: 0,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(dados),
+                    success: function (response) {
+                        alert('Salvo com sucesso!');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Não foi possível salvar!')
+                    }
+                });
+            }
             function soNumero() {
                 $('.sonumero').on('keypress', function (e) {
                     tecla = e.which;
@@ -198,10 +245,11 @@
                 $('#textCEP').inputmask('99999999');
                 $(".decimal").inputmask("decimal", {
                     'digits': 2,
-                    'radixPoint': ",",
+                    'radixPoint': ".",
                     'digitsOptional': false
                 });
                 buttonCEPOnClick();
+                buttonSalvarOnClick();
                 selectCidadeOnChange();
                 selectUFOnChange();
                 montarSelectTipo();
@@ -218,7 +266,7 @@
             <div class="col-md-12">
                 <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Fornecedor</h3>
+                        <h3 class="card-title">Imóvel</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -296,43 +344,43 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textDormitorios">Dormitórios</label>
-                                    <input type="text" class="form-control sonumero" name="textDormitorios" id="textDormitorios" placeholder="Dormitórios" value="" />
+                                    <input type="text" class="form-control sonumero" name="textDormitorios" id="textDormitorios" placeholder="Dormitórios" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="textSuites">Suítes</label>
-                                    <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="" />
+                                    <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="textVagas">Vagas</label>
-                                    <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="" />
+                                    <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textArea">Área (m²)</label>
-                                    <input type="text" class="form-control decimal" name="textArea" id="textArea" placeholder="Área (m²)" value="" />
+                                    <input type="text" class="form-control decimal" name="textArea" id="textArea" placeholder="Área (m²)" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textCondominio">Condomínio</label>
-                                    <input type="text" class="form-control decimal" name="textCondominio" id="textCondominio" placeholder="Condomínio" value="" />
+                                    <input type="text" class="form-control decimal" name="textCondominio" id="textCondominio" placeholder="Condomínio" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textValor">Valor</label>
-                                    <input type="text" class="form-control decimal" name="textValor" id="textValor" placeholder="Valor" value="" />
+                                    <input type="text" class="form-control decimal" name="textValor" id="textValor" placeholder="Valor" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textValorTotal">Valor Total</label>
-                                    <input type="text" class="form-control decimal" name="textValorTotal" id="textValorTotal" placeholder="Valor Total" value="" />
+                                    <input type="text" class="form-control decimal" name="textValorTotal" id="textValorTotal" placeholder="Valor Total" value="0" />
                                 </div>
                             </div>
                         </div>
