@@ -1,10 +1,10 @@
 ﻿using CristianKulessa.Locadora.BackOffice.WebApi.Models;
 using CristianKulessa.Locadora.BackOffice.WebApi.Repositories.Interfaces;
+using CristianKulessa.Locadora.BackOffice.WebApi.RequestModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
@@ -47,6 +47,10 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select(id);
+                if (dados == null)
+                {
+                    return NotFound("Registro não existe");
+                }
                 var item = new
                 {
                     dados.Id,
@@ -60,11 +64,11 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Post(Tipo item)
+        public IActionResult Post(TipoRequest item)
         {
             try
             {
-                repository.Insert(item);
+                repository.Insert(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -73,11 +77,11 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Put(Tipo item)
+        public IActionResult Put(TipoRequest item)
         {
             try
             {
-                repository.Update(item);
+                repository.Update(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -85,6 +89,7 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -98,6 +103,12 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
-
+        private Tipo Bind(TipoRequest item)
+        {
+            return new Tipo() { 
+                Id = item.Id,
+                Nome = item.Nome
+            };
+        }
     }
 }

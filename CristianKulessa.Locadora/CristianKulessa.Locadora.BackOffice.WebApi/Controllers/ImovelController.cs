@@ -1,5 +1,6 @@
 ﻿using CristianKulessa.Locadora.BackOffice.WebApi.Models;
 using CristianKulessa.Locadora.BackOffice.WebApi.Repositories.Interfaces;
+using CristianKulessa.Locadora.BackOffice.WebApi.RequestModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,38 +17,52 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
     {
         private readonly ILogger<ImovelController> logger;
         private readonly IImovelRepository repository;
+        private readonly ITipoRepository tipoRepository;
+        private readonly IUFRepository ufRepository;
+        private readonly ICidadeRepository cidadeRepository;
+        private readonly IBairroRepository bairroRepository;
 
         public ImovelController(
             ILogger<ImovelController> logger,
-            IImovelRepository repository)
+            IImovelRepository repository,
+            ITipoRepository tipoRepository,
+            IUFRepository ufRepository,
+            ICidadeRepository cidadeRepository,
+            IBairroRepository bairroRepository)
         {
             this.logger = logger;
             this.repository = repository;
+            this.tipoRepository = tipoRepository;
+            this.ufRepository = ufRepository;
+            this.cidadeRepository = cidadeRepository;
+            this.bairroRepository = bairroRepository;
         }
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
-                var dados = repository.Select().Select(p => new
+                var imoveis = repository.Select().OrderBy(p => p.Valor).ToList();
+                var tipos = tipoRepository.Select().ToList();
+                var ufs = ufRepository.Select().ToList();
+                var cidades = cidadeRepository.Select().ToList();
+                var bairros = bairroRepository.Select().ToList();
+
+                var dados = imoveis.Join(tipos, i => i.TipoId, t => t.Id, (i, t) => new
                 {
-                    p.Id,
-                    p.Alugado,
-                    p.Area,
-                    p.BairroId,
-                    p.Cep,
-                    p.CidadeId,
-                    p.Complemento,
-                    p.Condominio,
-                    p.Dormitorios,
-                    p.Endereco,
-                    p.Numero,
-                    p.Suites,
-                    p.TipoId,
-                    p.Ufid,
-                    p.VagasCarro,
-                    p.Valor
-                }).OrderBy(p => p.Valor).ToList();
+                    i.Id, Tipo = t.Nome, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites,
+                    i.VagasCarro, i.Area, i.Cep, i.Ufid, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(ufs, i=>i.Ufid, u=>u.Id, (i,u)=>new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, Uf = u.Sigla, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(cidades, i=>i.CidadeId, c=>c.Id, (i, c) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, Cidade = c.Nome, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(bairros, i => i.BairroId, b => b.Id, (i, b) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, i.Cidade,Bairro = b.Nome, i.Endereco, i.Numero, i.Complemento
+                });
+
                 return Ok(dados);
             }
             catch (Exception ex)
@@ -61,14 +76,20 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select(id);
+                if (dados==null)
+                {
+                    return NotFound("Registro não existe");
+                }
                 var item = new
                 {
                     dados.Id,
                     dados.Alugado,
                     dados.Area,
                     dados.BairroId,
+                    Bairro = bairroRepository.Select(dados.BairroId).Nome,
                     dados.Cep,
                     dados.CidadeId,
+                    Cidade = cidadeRepository.Select(dados.CidadeId).Nome,
                     dados.Complemento,
                     dados.Condominio,
                     dados.Dormitorios,
@@ -76,9 +97,12 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     dados.Numero,
                     dados.Suites,
                     dados.TipoId,
+                    Tipo = tipoRepository.Select(dados.TipoId).Nome,
                     dados.Ufid,
+                    Uf = ufRepository.Select(dados.Ufid).Sigla,
                     dados.VagasCarro,
-                    dados.Valor
+                    dados.Valor,
+                    dados.ValorTotal
                 };
                 return Ok(item);
             }
@@ -92,7 +116,27 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
         {
             try
             {
-                var dados = repository.Select().Where(p => p.TipoId == id).OrderBy(p => p.Valor).ToList();
+                var imoveis = repository.Select().Where(p => p.TipoId == id).OrderBy(p => p.Valor).ToList();
+                var tipos = tipoRepository.Select().ToList();
+                var ufs = ufRepository.Select().ToList();
+                var cidades = cidadeRepository.Select().ToList();
+                var bairros = bairroRepository.Select().ToList();
+
+                var dados = imoveis.Join(tipos, i => i.TipoId, t => t.Id, (i, t) => new
+                {
+                    i.Id, Tipo = t.Nome, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites,
+                    i.VagasCarro, i.Area, i.Cep, i.Ufid, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(ufs, i=>i.Ufid, u=>u.Id, (i,u)=>new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, Uf = u.Sigla, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(cidades, i=>i.CidadeId, c=>c.Id, (i, c) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, Cidade = c.Nome, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(bairros, i => i.BairroId, b => b.Id, (i, b) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, i.Cidade,Bairro = b.Nome, i.Endereco, i.Numero, i.Complemento
+                });
+
                 return Ok(dados);
             }
             catch (Exception ex)
@@ -101,11 +145,11 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Post(Imovel item)
+        public IActionResult Post(ImovelRequest item)
         {
             try
             {
-                repository.Insert(item);
+                repository.Insert(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -113,12 +157,13 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
+
         [HttpPut]
-        public IActionResult Put(Imovel item)
+        public IActionResult Put(ImovelRequest item)
         {
             try
             {
-                repository.Update(item);
+                repository.Update(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -139,6 +184,26 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
-
+        private Imovel Bind(ImovelRequest item)
+        {
+            return new Imovel() { 
+                Alugado =  item.Alugado,
+                Area = item.Area,
+                BairroId = item.BairroId,
+                Cep=item.Cep,
+                CidadeId = item.CidadeId,
+                Complemento = item.Complemento,
+                Condominio = item.Condominio,
+                Dormitorios = item.Dormitorios,
+                Endereco = item.Endereco,
+                Id = item.Id,
+                Numero =  item.Numero,
+                Suites = item.Suites,
+                TipoId = item.TipoId,
+                Ufid = item.UfId,
+                VagasCarro = item.VagasCarro,
+                Valor = item.Valor
+            };
+        }
     }
 }

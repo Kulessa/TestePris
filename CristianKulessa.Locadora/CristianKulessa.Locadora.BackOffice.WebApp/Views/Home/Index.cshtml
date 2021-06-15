@@ -98,18 +98,50 @@
                         "type": "GET",
                         "contentType": "application/json; charset=utf-8",
                         "url": urlApi,
-                        "dataSrc": ""                    },
+                        "dataSrc": ""
+                    },
                     "columns": [
+                        { "data": null },
                         { "data": null },
                         { "data": "id" },
                         { "data": "tipo" },
-                        { "data": "alugado" },
-                        { "data": "condominio" },
-                        { "data": "valor" },
-                        { "data": "dormitorios" },
-                        { "data": "suites" },
-                        { "data": "vagasCarro" },
-                        { "data": "area" },
+                        {
+                            "data": "alugado",
+                            "render": function (data, type, row) {
+                                return (data == true) ? 'Sim' : 'Não';
+                            }
+                        },
+                        {
+                            "data": "condominio",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        {
+                            "data": "valor",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        {
+                            "data": "valorTotal",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        { "data": "dormitorios", "type": "num" },
+                        { "data": "suites", "type": "num" },
+                        { "data": "vagasCarro", "type": "num" },
+                        {
+                            "data": "area",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
                         { "data": "cep" },
                         { "data": "uf" },
                         { "data": "cidade" },
@@ -123,13 +155,23 @@
                             "targets": 0,
                             "data": null,
                             "orderable": false,
-                            "defaultContent": '<button type="button" class="btn btn-primary btn-xs"><i class="far fa-edit fa-xs"></i></button>'
+                            "defaultContent": '<button type="button" class="btn btn-primary btn-xs edit"><i class="far fa-edit fa-xs"></i></button>'
+                        },
+                        {
+                            "targets": 1,
+                            "data": null,
+                            "orderable": false,
+                            "defaultContent": '<button type="button" class="btn btn-primary btn-xs trash"><i class="far fa-trash-alt fa-xs"></i></button>'
                         }
                     ]
                 });
-                $('#tableDados tbody').on('click', 'button', function () {
+                $('#tableDados tbody').on('click', 'button.edit', function () {
                     var data = table.row($(this).parents('tr')).data();
-                    window.open("./Detail/" + data.id, "_parent");
+                    window.open("/Home/Detail/" + data.id, "_parent");
+                });
+                $('#tableDados tbody').on('click', 'button.trash', function () {
+                    var data = table.row($(this).parents('tr')).data();
+                    excluir(data.id);
                 });
 
                 $('div.dt-buttons.btn-group.flex-wrap').removeClass('btn-group');
@@ -140,6 +182,22 @@
                 }
             });
             montarSelectTipo();
+            function excluir(id) {
+                var urlApiImovel = '@ViewBag.UrlApiImovel' + id;
+                $.ajax({
+                    type: "DELETE",
+                    url: urlApiImovel,
+                    timeout: 0,
+                    success: function (response) {
+                        alert("Excluido com sucesso!");
+                        window.open("/Home/Index", "_parent");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Não foi possivel excluir, tente mais tarde.")
+                    }
+                });
+
+            }
         });
     </script>
 }
@@ -179,11 +237,13 @@
                     <thead>
                         <tr>
                             <td>Editar</td>
+                            <td>Excluir</td>
                             <td>Id</td>
                             <td>Tipo</td>
                             <td>Alugado</td>
                             <td>Condominio</td>
                             <td>Valor</td>
+                            <td>Valor Total</td>
                             <td>Dormitórios</td>
                             <td>Suites</td>
                             <td>Vagas para Carro</td>

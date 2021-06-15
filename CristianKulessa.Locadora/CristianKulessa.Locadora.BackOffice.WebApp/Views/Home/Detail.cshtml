@@ -43,7 +43,14 @@
                         esconderEndereco();
                         return;
                     }
-                    buscarEndereco(cep)
+                    buscarEndereco(cep);
+                });
+            }
+            function buttonSalvarOnClick() {
+                $('#buttonSalvar').click(function (e) {
+                    e.preventDefault();
+                    var dados = lerDados();
+                    salvar(dados);
                 });
             }
             function selectUFOnChange() {
@@ -57,6 +64,7 @@
                     montarSelectBairro(this.value);
                 });
             }
+
             function buscarEndereco(cep) {
                 var urlApiCEP = '@ViewBag.UrlApiCEP' + cep;
                 $.ajax({
@@ -75,15 +83,29 @@
                     }
                 });
             }
+            function carregaDados() {
+                var urlApiImovel = '@ViewBag.UrlApiImovel' + '@ViewBag.Id';
+                $.ajax({
+                    type: "GET",
+                    url: urlApiImovel,
+                    timeout: 0,
+                    success: function (response) {
+                        preencherDados(response);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        window.open("/Home/Index", "_parent");
+                    }
+                });
+            }
             function esconderEndereco() {
                 $('#divEndereco').addClass('invisible');
                 $('#divUF').addClass('invisible');
                 $('#divCidade').addClass('invisible');
                 $('#divBairro').addClass('invisible');
                 $('#textEndereco').val('');
-                $('#selectUF').val(0);
-                $('#selectCidade').val(0);
-                $('#selectBairro').val(0);
+                $('#selectUF').val(0).change();
+                $('#selectCidade').val(0).change();
+                $('#selectBairro').val(0).change();
 
             }
             function fazerEnderecoReadOnly(chave) {
@@ -99,6 +121,27 @@
                     $('#selectCidade').removeAttr('disabled');
                     $('#selectBairro').removeAttr('disabled');
                 }
+            }
+            function lerDados() {
+                var dados = {
+                    id: @ViewBag.Id,
+                    tipoId: parseInt($('#selectTipo').val()),
+                    ufId: parseInt($('#selectUF').val()),
+                    cidadeId: parseInt($('#selectCidade').val()),
+                    bairroId: parseInt($('#selectBairro').val()),
+                    alugado: $('#checkboxAlugado').is(':checked'),
+                    dormitorios: parseInt($('#textDormitorios').val()),
+                    suites: parseInt($('#textSuites').val()),
+                    vagasCarro: parseInt($('#textVagas').val()),
+                    cep: $('#textCEP').val(),
+                    area: parseFloat($('#textArea').val()),
+                    condominio: parseFloat($('#textCondominio').val()),
+                    valor: parseFloat($('#textValor').val()),
+                    endereco: $('#textEndereco').val(),
+                    numero: $('#textNumero').val(),
+                    complemento: $('#textComplemento').val()
+                };
+                return dados;
             }
             function montarSelectBairro(cidadeId) {
                 var urlApiBairro = '@ViewBag.UrlApiBairro' + cidadeId;
@@ -182,11 +225,48 @@
                 $('#divCidade').removeClass('invisible');
                 $('#divBairro').removeClass('invisible');
                 $('#textEndereco').val(dados.endereco);
-                $('#selectUF').val(dados.ufId);
+                $('#selectUF').val(dados.ufId).change();
                 montarSelectCidade(dados.ufId);
-                $('#selectCidade').val(dados.cidadeId);
+                $('#selectCidade').val(dados.cidadeId).change();
                 montarSelectBairro(dados.cidadeId);
-                $('#selectBairro').val(dados.bairroId);
+                $('#selectBairro').val(dados.bairroId).change();
+            }
+            function preencherDados(dados) {
+                $('#selectTipo').val(dados.tipoId).change();
+                $('#textCEP').val(dados.cep);
+                $('#textNumero').val(dados.numero);
+                $('#textComplemento').val(dados.complemento);
+
+                buscarEndereco(dados.cep);
+
+                $('#checkboxAlugado').prop('checked', dados.alugado);
+                $('#textDormitorios').val(dados.dormitorios);
+                $('#textSuites').val(dados.suites);
+                $('#textVagas').val(dados.vagasCarro);
+                $('#textArea').val(dados.area);
+                $('#textCondominio').val(dados.condominio);
+                $('#textValor').val(dados.valor)
+                $('#textValorTotal').val(dados.valorTotal);
+            }
+            function salvar(dados) {
+                var tipo = (dados.id == null || dados.id == 0) ? 'POST' : 'PUT';
+                var urlApiImovel = '@ViewBag.UrlApiImovel';
+                $.ajax({
+                    url: urlApiImovel,
+                    method: tipo,
+                    timeout: 0,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(dados),
+                    success: function (response) {
+                        alert('Salvo com sucesso!');
+                        window.open("/Home/Index", "_parent");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Não foi possível salvar!')
+                    }
+                });
             }
             function soNumero() {
                 $('.sonumero').on('keypress', function (e) {
@@ -198,15 +278,19 @@
                 $('#textCEP').inputmask('99999999');
                 $(".decimal").inputmask("decimal", {
                     'digits': 2,
-                    'radixPoint': ",",
+                    'radixPoint': ".",
                     'digitsOptional': false
                 });
                 buttonCEPOnClick();
+                buttonSalvarOnClick();
                 selectCidadeOnChange();
                 selectUFOnChange();
                 montarSelectTipo();
                 montarSelectUF();
                 soNumero();
+                if (@ViewBag.Id != 0) {
+                    carregaDados();
+                }
             }
             inicializar();
         });
@@ -218,7 +302,7 @@
             <div class="col-md-12">
                 <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Fornecedor</h3>
+                        <h3 class="card-title">Imóvel</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -233,7 +317,7 @@
                                 <div class="form-group">
                                     <label for="textCEP">CEP</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" autocomplete="off"/>
+                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" autocomplete="off" />
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary nacional" type="button" id="buttonCEP"><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
@@ -241,7 +325,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-8">
-                                <div  id="divEndereco"class="form-group invisible">
+                                <div id="divEndereco" class="form-group invisible">
                                     <label for="textEndereco">Endereço</label>
                                     <input type="text" class="form-control" name="textEndereco" id="textEndereco" placeholder="Endereço" value="" />
                                 </div>
@@ -296,43 +380,43 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textDormitorios">Dormitórios</label>
-                                    <input type="text" class="form-control sonumero" name="textDormitorios" id="textDormitorios" placeholder="Dormitórios" value="" />
+                                    <input type="text" class="form-control sonumero" name="textDormitorios" id="textDormitorios" placeholder="Dormitórios" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="textSuites">Suítes</label>
-                                    <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="" />
+                                    <input type="text" class="form-control sonumero" name="textSuites" id="textSuites" placeholder="Suítes" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="textVagas">Vagas</label>
-                                    <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="" />
+                                    <input type="text" class="form-control sonumero" name="textVagas" id="textVagas" placeholder="Vagas" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textArea">Área (m²)</label>
-                                    <input type="text" class="form-control decimal" name="textArea" id="textArea" placeholder="Área (m²)" value="" />
+                                    <input type="text" class="form-control decimal" name="textArea" id="textArea" placeholder="Área (m²)" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textCondominio">Condomínio</label>
-                                    <input type="text" class="form-control decimal" name="textCondominio" id="textCondominio" placeholder="Condomínio" value="" />
+                                    <input type="text" class="form-control decimal" name="textCondominio" id="textCondominio" placeholder="Condomínio" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textValor">Valor</label>
-                                    <input type="text" class="form-control decimal" name="textValor" id="textValor" placeholder="Valor" value="" />
+                                    <input type="text" class="form-control decimal" name="textValor" id="textValor" placeholder="Valor" value="0" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="textValorTotal">Valor Total</label>
-                                    <input type="text" class="form-control decimal" name="textValorTotal" id="textValorTotal" placeholder="Valor Total" value="" />
+                                    <input type="text" class="form-control decimal" name="textValorTotal" id="textValorTotal" placeholder="Valor Total" value="0" />
                                 </div>
                             </div>
                         </div>

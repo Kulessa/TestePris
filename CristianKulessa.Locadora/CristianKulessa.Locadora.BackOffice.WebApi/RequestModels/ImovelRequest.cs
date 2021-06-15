@@ -1,12 +1,10 @@
-﻿#nullable disable
-
-namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
+﻿namespace CristianKulessa.Locadora.BackOffice.WebApi.RequestModels
 {
-    public partial class Imovel
+    public class ImovelRequest
     {
         public int Id { get; set; }
         public int TipoId { get; set; }
-        public int Ufid { get; set; }
+        public int UfId { get; set; }
         public int CidadeId { get; set; }
         public int BairroId { get; set; }
         public bool Alugado { get; set; }
@@ -20,11 +18,5 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Models
         public string Endereco { get; set; }
         public string Numero { get; set; }
         public string Complemento { get; set; }
-        public decimal? ValorTotal { get; set; }
-
-        public virtual Bairro Bairro { get; set; }
-        public virtual Cidade Cidade { get; set; }
-        public virtual Tipo Tipo { get; set; }
-        public virtual Uf Uf { get; set; }
     }
 }
