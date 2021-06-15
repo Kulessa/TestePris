@@ -1,5 +1,6 @@
 ﻿using CristianKulessa.Locadora.BackOffice.WebApi.Models;
 using CristianKulessa.Locadora.BackOffice.WebApi.Repositories.Interfaces;
+using CristianKulessa.Locadora.BackOffice.WebApi.RequestModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -47,6 +48,10 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select(id);
+                if (dados == null)
+                {
+                    return NotFound("Registro não existe");
+                }
                 var item = new
                 {
                     dados.Id,
@@ -61,11 +66,11 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Post(Uf item)
+        public IActionResult Post(UfRequest item)
         {
             try
             {
-                repository.Insert(item);
+                repository.Insert(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -73,12 +78,13 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
+
         [HttpPut]
-        public IActionResult Put(Uf item)
+        public IActionResult Put(UfRequest item)
         {
             try
             {
-                repository.Update(item);
+                repository.Update(Bind(item));
                 return Ok(item);
             }
             catch (Exception ex)
@@ -99,6 +105,13 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                 return StatusCode(500, ex);
             }
         }
-
+        private Uf Bind(UfRequest item)
+        {
+            return new Uf() { 
+                Id = item.Id,
+                Nome = item.Nome,
+                Sigla=item.Sigla
+            };
+        }
     }
 }

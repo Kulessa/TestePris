@@ -42,25 +42,27 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
         {
             try
             {
-                var dados = repository.Select().Select(p => new
+                var imoveis = repository.Select().OrderBy(p => p.Valor).ToList();
+                var tipos = tipoRepository.Select().ToList();
+                var ufs = ufRepository.Select().ToList();
+                var cidades = cidadeRepository.Select().ToList();
+                var bairros = bairroRepository.Select().ToList();
+
+                var dados = imoveis.Join(tipos, i => i.TipoId, t => t.Id, (i, t) => new
                 {
-                    p.Id,
-                    p.Alugado,
-                    p.Area,
-                    p.BairroId,
-                    p.Cep,
-                    p.CidadeId,
-                    p.Complemento,
-                    p.Condominio,
-                    p.Dormitorios,
-                    p.Endereco,
-                    p.Numero,
-                    p.Suites,
-                    p.TipoId,
-                    p.Ufid,
-                    p.VagasCarro,
-                    p.Valor
-                }).OrderBy(p => p.Valor).ToList();
+                    i.Id, Tipo = t.Nome, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites,
+                    i.VagasCarro, i.Area, i.Cep, i.Ufid, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(ufs, i=>i.Ufid, u=>u.Id, (i,u)=>new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, Uf = u.Sigla, i.CidadeId, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(cidades, i=>i.CidadeId, c=>c.Id, (i, c) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, Cidade = c.Nome, i.BairroId, i.Endereco, i.Numero, i.Complemento
+                }).Join(bairros, i => i.BairroId, b => b.Id, (i, b) => new {
+                    i.Id, i.Tipo, i.Alugado, i.Condominio, i.Valor, i.ValorTotal, i.Dormitorios, i.Suites, i.VagasCarro,
+                    i.Area, i.Cep, i.Uf, i.Cidade,Bairro = b.Nome, i.Endereco, i.Numero, i.Complemento
+                });
+
                 return Ok(dados);
             }
             catch (Exception ex)
@@ -74,14 +76,20 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
             try
             {
                 var dados = repository.Select(id);
+                if (dados==null)
+                {
+                    return NotFound("Registro não existe");
+                }
                 var item = new
                 {
                     dados.Id,
                     dados.Alugado,
                     dados.Area,
                     dados.BairroId,
+                    Bairro = bairroRepository.Select(dados.BairroId).Nome,
                     dados.Cep,
                     dados.CidadeId,
+                    Cidade = cidadeRepository.Select(dados.CidadeId).Nome,
                     dados.Complemento,
                     dados.Condominio,
                     dados.Dormitorios,
@@ -89,9 +97,12 @@ namespace CristianKulessa.Locadora.BackOffice.WebApi.Controllers
                     dados.Numero,
                     dados.Suites,
                     dados.TipoId,
+                    Tipo = tipoRepository.Select(dados.TipoId).Nome,
                     dados.Ufid,
+                    Uf = ufRepository.Select(dados.Ufid).Sigla,
                     dados.VagasCarro,
-                    dados.Valor
+                    dados.Valor,
+                    dados.ValorTotal
                 };
                 return Ok(item);
             }

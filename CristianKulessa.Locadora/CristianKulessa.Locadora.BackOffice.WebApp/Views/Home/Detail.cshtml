@@ -43,7 +43,7 @@
                         esconderEndereco();
                         return;
                     }
-                    buscarEndereco(cep)
+                    buscarEndereco(cep);
                 });
             }
             function buttonSalvarOnClick() {
@@ -64,6 +64,7 @@
                     montarSelectBairro(this.value);
                 });
             }
+
             function buscarEndereco(cep) {
                 var urlApiCEP = '@ViewBag.UrlApiCEP' + cep;
                 $.ajax({
@@ -82,15 +83,29 @@
                     }
                 });
             }
+            function carregaDados() {
+                var urlApiImovel = '@ViewBag.UrlApiImovel' + '@ViewBag.Id';
+                $.ajax({
+                    type: "GET",
+                    url: urlApiImovel,
+                    timeout: 0,
+                    success: function (response) {
+                        preencherDados(response);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        window.open("/Home/Index", "_parent");
+                    }
+                });
+            }
             function esconderEndereco() {
                 $('#divEndereco').addClass('invisible');
                 $('#divUF').addClass('invisible');
                 $('#divCidade').addClass('invisible');
                 $('#divBairro').addClass('invisible');
                 $('#textEndereco').val('');
-                $('#selectUF').val(0);
-                $('#selectCidade').val(0);
-                $('#selectBairro').val(0);
+                $('#selectUF').val(0).change();
+                $('#selectCidade').val(0).change();
+                $('#selectBairro').val(0).change();
 
             }
             function fazerEnderecoReadOnly(chave) {
@@ -210,11 +225,28 @@
                 $('#divCidade').removeClass('invisible');
                 $('#divBairro').removeClass('invisible');
                 $('#textEndereco').val(dados.endereco);
-                $('#selectUF').val(dados.ufId);
+                $('#selectUF').val(dados.ufId).change();
                 montarSelectCidade(dados.ufId);
-                $('#selectCidade').val(dados.cidadeId);
+                $('#selectCidade').val(dados.cidadeId).change();
                 montarSelectBairro(dados.cidadeId);
-                $('#selectBairro').val(dados.bairroId);
+                $('#selectBairro').val(dados.bairroId).change();
+            }
+            function preencherDados(dados) {
+                $('#selectTipo').val(dados.tipoId).change();
+                $('#textCEP').val(dados.cep);
+                $('#textNumero').val(dados.numero);
+                $('#textComplemento').val(dados.complemento);
+
+                buscarEndereco(dados.cep);
+
+                $('#checkboxAlugado').prop('checked', dados.alugado);
+                $('#textDormitorios').val(dados.dormitorios);
+                $('#textSuites').val(dados.suites);
+                $('#textVagas').val(dados.vagasCarro);
+                $('#textArea').val(dados.area);
+                $('#textCondominio').val(dados.condominio);
+                $('#textValor').val(dados.valor)
+                $('#textValorTotal').val(dados.valorTotal);
             }
             function salvar(dados) {
                 var tipo = (dados.id == null || dados.id == 0) ? 'POST' : 'PUT';
@@ -229,6 +261,7 @@
                     data: JSON.stringify(dados),
                     success: function (response) {
                         alert('Salvo com sucesso!');
+                        window.open("/Home/Index", "_parent");
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         alert('Não foi possível salvar!')
@@ -255,6 +288,9 @@
                 montarSelectTipo();
                 montarSelectUF();
                 soNumero();
+                if (@ViewBag.Id != 0) {
+                    carregaDados();
+                }
             }
             inicializar();
         });
@@ -281,7 +317,7 @@
                                 <div class="form-group">
                                     <label for="textCEP">CEP</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" autocomplete="off"/>
+                                        <input type="text" class="form-control sonumero" name="textCEP" id="textCEP" placeholder="CEP" value="" autocomplete="off" />
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary nacional" type="button" id="buttonCEP"><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
@@ -289,7 +325,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-8">
-                                <div  id="divEndereco"class="form-group invisible">
+                                <div id="divEndereco" class="form-group invisible">
                                     <label for="textEndereco">Endereço</label>
                                     <input type="text" class="form-control" name="textEndereco" id="textEndereco" placeholder="Endereço" value="" />
                                 </div>

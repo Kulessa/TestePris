@@ -110,13 +110,37 @@
                                 return (data == true) ? 'Sim' : 'Não';
                             }
                         },
-                        { "data": "condominio" },
-                        { "data": "valor" },
-                        { "data": "valorTotal" },
-                        { "data": "dormitorios" },
-                        { "data": "suites" },
-                        { "data": "vagasCarro" },
-                        { "data": "area" },
+                        {
+                            "data": "condominio",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        {
+                            "data": "valor",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        {
+                            "data": "valorTotal",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
+                        { "data": "dormitorios", "type": "num" },
+                        { "data": "suites", "type": "num" },
+                        { "data": "vagasCarro", "type": "num" },
+                        {
+                            "data": "area",
+                            "type": "num",
+                            "render": function (data, type, full) {
+                                return parseFloat(data).toFixed(2);
+                            }
+                        },
                         { "data": "cep" },
                         { "data": "uf" },
                         { "data": "cidade" },
