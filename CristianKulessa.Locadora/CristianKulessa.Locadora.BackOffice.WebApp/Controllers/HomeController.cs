@@ -26,6 +26,9 @@ namespace CristianKulessa.Locadora.BackOffice.WebApp.Controllers
             var urlApiImovelTipo = config.GetSection("ApiSettings")["UrlApiImovelTipo"];
             ViewBag.UrlApiImovelTipo = urlApiImovelTipo;
 
+            var urlApiImovel = config.GetSection("ApiSettings")["UrlApiImovel"];
+            ViewBag.UrlApiImovel = urlApiImovel;
+
             return View();
         }
         public IActionResult Detail(int id = 0)
